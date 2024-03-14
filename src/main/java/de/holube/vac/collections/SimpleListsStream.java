@@ -1,6 +1,8 @@
 package de.holube.vac.collections;
 
 import lombok.*;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +77,13 @@ public class SimpleListsStream<T> implements ListsStream<T> {
         final int minSize = Math.min(first.size(), second.size());
         final List<R> newFirst = new ArrayList<>(minSize);
         final List<R> newSecond = new ArrayList<>(minSize);
+        final MutablePair<T, T> pair = new MutablePair<>();
         for (int i = 0; i < minSize; i++) {
-            final Pair<T, T> pair = new Pair<>(first.get(i), second.get(i));
+            pair.setLeft(first.get(i));
+            pair.setRight(second.get(i));
             final Pair<R, R> newPair = mapper.apply(pair);
-            newFirst.set(i, newPair.getFirst());
-            newSecond.set(i, newPair.getSecond());
+            newFirst.set(i, newPair.getLeft());
+            newSecond.set(i, newPair.getRight());
         }
         return new SimpleListsStream<>(newFirst, newSecond);
     }
@@ -105,13 +109,13 @@ public class SimpleListsStream<T> implements ListsStream<T> {
 
     @Override
     public Pair<List<T>, List<T>> toLists() {
-        return new Pair<>(first, second);
+        return new MutablePair<>(first, second);
     }
 
     @Override
     public Pair<List<T>, List<T>> toCommonSizeLists() {
         final int minSize = Math.min(first.size(), second.size());
-        return new Pair<>(first.subList(0, minSize), second.subList(0, minSize));
+        return new MutablePair<>(first.subList(0, minSize), second.subList(0, minSize));
     }
 
     @Override
@@ -156,14 +160,13 @@ public class SimpleListsStream<T> implements ListsStream<T> {
     @SuppressWarnings("unchecked")
     @Override
     public Pair<T[], T[]> toArrays() {
-        return new Pair<>((T[]) first.toArray(), (T[]) second.toArray());
+        return new MutablePair<>((T[]) first.toArray(), (T[]) second.toArray());
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Pair<T[], T[]> toCommonSizeArrays() {
         toCommonSize();
-        return new Pair<>((T[]) first.toArray(), (T[]) second.toArray());
+        return toArrays();
     }
 
     @SuppressWarnings("unchecked")
