@@ -5,4 +5,5 @@ module de.holube.vac {
 
     exports de.holube.vac.collections;
     exports de.holube.vac.stream;
+    exports de.holube.vac.stream.list;
 }

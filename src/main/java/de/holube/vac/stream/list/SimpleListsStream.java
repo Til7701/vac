@@ -1,4 +1,4 @@
-package de.holube.vac.stream;
+package de.holube.vac.stream.list;
 
 import lombok.*;
 import org.apache.commons.lang3.tuple.MutablePair;
