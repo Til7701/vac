@@ -4,4 +4,5 @@ module de.holube.vac {
     requires org.apache.commons.collections4;
 
     exports de.holube.vac.collections;
+    exports de.holube.vac.stream;
 }
