@@ -2,12 +2,11 @@ package de.holube.vac.collections;
 
 import java.util.*;
 
-public class TwoDArrayList<E> implements TwoDList<E>, Cloneable, RandomAccess {
+public class TwoDArrayList<E> extends AbstractCollection<E> implements TwoDList<E>, RandomAccess {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private Object[][] elementData;
-    private int[] sizes;
+    private final List<List<E>> elementData;
 
     public TwoDArrayList() {
         this(DEFAULT_CAPACITY);
@@ -19,198 +18,156 @@ public class TwoDArrayList<E> implements TwoDList<E>, Cloneable, RandomAccess {
 
     public TwoDArrayList(int initialNumRows, int initialNumCols) {
         if (initialNumRows < 0)
-            throw new IllegalArgumentException("Illegal Capacity must be positive or zero: " + initialNumRows);
+            throw new IllegalArgumentException("Illegal number of rows. Must be positive or zero: " + initialNumRows);
         if (initialNumCols < 0)
-            throw new IllegalArgumentException("Illegal SubCapacity must be positive or zero: " + initialNumCols);
-
-        this.elementData = new Object[initialNumRows][];
-        this.sizes = new int[initialNumRows];
-        for (int i = 0; i < initialNumRows; i++) {
-            this.elementData[i] = new Object[initialNumCols];
-        }
+            throw new IllegalArgumentException("Illegal number of columns. Must be positive or zero: " + initialNumCols);
+        this.elementData = new ArrayList<>(initialNumRows);
     }
 
     public TwoDArrayList(TwoDArrayList<E> other) {
-        this.elementData = new Object[other.elementData.length][];
-        this.sizes = new int[other.elementData.length];
-        for (int i = 0; i < other.elementData.length; i++) {
-            this.elementData[i] = new Object[other.elementData[i].length];
-            this.sizes[i] = other.sizes[i];
-            elementData[i] = Arrays.copyOf(other.elementData[i], other.elementData[i].length);
+        Objects.requireNonNull(other, "Other list must not be null.");
+        this.elementData = new ArrayList<>(other.elementData.size());
+        for (int i = 0; i < other.elementData.size(); i++) {
+            this.elementData.add(new ArrayList<>(other.elementData.get(i)));
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private E elementData(int i, int j) {
-        return (E) elementData[i][j];
-    }
-
-    private void grow(int minCapacity) {
-        int oldCapacity = elementData.length;
-        if (minCapacity > oldCapacity) {
-            int newCapacity = oldCapacity + (oldCapacity * 2);
-            if (newCapacity < minCapacity)
-                newCapacity = minCapacity;
-            elementData = Arrays.copyOf(elementData, newCapacity);
+    public TwoDArrayList(E[][] array) {
+        Objects.requireNonNull(array, "Array must not be null.");
+        this.elementData = new ArrayList<>(array.length);
+        for (E[] row : array) {
+            List<E> list = new ArrayList<>(row.length);
+            Collections.addAll(list, row);
+            elementData.add(list);
         }
-    }
-
-    private void grow(int row, int minCapacity) {
-        int oldCapacity = elementData[row].length;
-        if (minCapacity > oldCapacity) {
-            int newCapacity = oldCapacity + (oldCapacity * 2);
-            if (newCapacity < minCapacity)
-                newCapacity = minCapacity;
-            elementData[row] = Arrays.copyOf(elementData[row], newCapacity);
-        }
-    }
-
-    private void checkIndices(int row, int column) {
-        Objects.checkIndex(row, sizes.length);
-        Objects.checkIndex(column, sizes[row]);
-    }
-
-    @Override
-    public List<E> get(int row) {
-        return null;
-    }
-
-    @Override
-    public E get(int row, int column) {
-        checkIndices(row, column);
-        return elementData(row, column);
-    }
-
-    @Override
-    public E set(int row, int column, E element) {
-        checkIndices(row, column);
-        E oldValue = elementData(row, column);
-        elementData[row][column] = element;
-        return oldValue;
-    }
-
-    @Override
-    public boolean add(int row, E element) {
-        Objects.checkIndex(row, sizes.length);
-        grow(row, sizes[row] + 1);
-        elementData[row][sizes[row]] = element;
-        sizes[row] = sizes[row] + 1;
-        return true;
-    }
-
-    @Override
-    public E remove(int row, int column) {
-        return null;
-    }
-
-    @Override
-    public int size(int row) {
-        return 0;
-    }
-
-    @Override
-    public E[] shortestArray(E[] array) {
-        return null;
-    }
-
-    @Override
-    public List<E> shortestList() {
-        return null;
-    }
-
-    @Override
-    public E[] longestArray(E[] array) {
-        return null;
-    }
-
-    @Override
-    public List<E> longestList() {
-        return null;
-    }
-
-    @Override
-    public boolean addToShortest(E element) {
-        return false;
-    }
-
-    @Override
-    public boolean addToLongest(E element) {
-        return false;
-    }
-
-    @Override
-    public int size() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean contains(Object o) {
-        return false;
     }
 
     @Override
     public Iterator<E> iterator() {
-        return null;
+        return new ElementIterator();
     }
 
     @Override
-    public Object[] toArray() {
-        return new Object[0];
+    public Iterator<List<E>> listIterator() {
+        return elementData.iterator();
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] a) {
-        return null;
+    public int size() {
+        int size = 0;
+        for (List<E> list : elementData) {
+            size += list.size();
+        }
+        return size;
     }
 
     @Override
-    public boolean add(E e) {
-        return false;
+    public List<E> get(int row) {
+        return elementData.get(row);
     }
 
     @Override
-    public boolean remove(Object o) {
-        return false;
+    public E get(int row, int column) {
+        return elementData.get(row).get(column);
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
+    public E set(int row, int column, E element) {
+        return elementData.get(row).set(column, element);
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
-        return false;
+    public boolean add(int row, E element) {
+        if (row >= elementData.size()) {
+            for (int i = elementData.size(); i <= row; i++)
+                elementData.add(new ArrayList<>());
+        }
+        return elementData.get(row).add(element);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
+    public E remove(int row, int column) {
+        return elementData.get(row).remove(column);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
+    public int size(int row) {
+        return elementData.get(row).size();
     }
 
     @Override
-    public void clear() {
-
+    public E[] shortestArray(E[] array) {
+        Objects.requireNonNull(array, "Array must not be null.");
+        return shortestList().toArray(array);
     }
 
     @Override
-    public TwoDArrayList<E> clone() {
-        try {
-            TwoDArrayList clone = (TwoDArrayList) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+    public List<E> shortestList() {
+        if (elementData.isEmpty()) return new ArrayList<>();
+        List<E> shortestList = elementData.getFirst();
+        for (int i = 1; i < elementData.size(); i++) {
+            if (elementData.get(i).size() < shortestList.size())
+                shortestList = elementData.get(i);
+        }
+        return shortestList;
+    }
+
+    @Override
+    public E[] longestArray(E[] array) {
+        return longestList().toArray(array);
+    }
+
+    @Override
+    public List<E> longestList() {
+        if (elementData.isEmpty()) return new ArrayList<>();
+        List<E> longestList = elementData.getFirst();
+        for (int i = 1; i < elementData.size(); i++) {
+            if (elementData.get(i).size() > longestList.size())
+                longestList = elementData.get(i);
+        }
+        return longestList;
+    }
+
+    @Override
+    public boolean addToShortest(E element) {
+        if (elementData.isEmpty())
+            elementData.add(new ArrayList<>());
+        return shortestList().add(element);
+    }
+
+    @Override
+    public boolean addToLongest(E element) {
+        if (elementData.isEmpty())
+            elementData.add(new ArrayList<>());
+        return longestList().add(element);
+    }
+
+    private class ElementIterator implements Iterator<E> {
+        private int row;
+        private int column;
+
+        public ElementIterator() {
+            this.row = 0;
+            this.column = 0;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return row < elementData.size() && column < elementData.get(row).size();
+        }
+
+        @Override
+        public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            E result = elementData.get(row).get(column);
+            column++;
+            if (column >= elementData.get(row).size()) {
+                row++;
+                column = 0;
+            }
+            return result;
         }
     }
 

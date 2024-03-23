@@ -1,9 +1,12 @@
 package de.holube.vac.collections;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 public interface TwoDList<E> extends Collection<E> {
+
+    Iterator<List<E>> listIterator();
 
     List<E> get(int row);
 

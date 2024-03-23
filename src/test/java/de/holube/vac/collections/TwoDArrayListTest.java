@@ -7,10 +7,10 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TwoDListOfListsTest {
+class TwoDArrayListTest {
 
     Object[][] defaultArray;
-    TwoDListOfLists<Object> defaultList;
+    TwoDArrayList<Object> defaultList;
 
     @BeforeEach
     void setUp() {
@@ -19,7 +19,7 @@ class TwoDListOfListsTest {
                 {new Object(), new Object(), new Object()},
                 {new Object()}
         };
-        defaultList = new TwoDListOfLists<>(defaultArray);
+        defaultList = new TwoDArrayList<>(defaultArray);
     }
 
     //##################################################
@@ -28,13 +28,13 @@ class TwoDListOfListsTest {
 
     @Test
     void iteratorEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertFalse(list.iterator().hasNext());
     }
 
     @Test
     void iteratorSingleTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         list.add(0, o1);
         int i = 0;
@@ -50,7 +50,7 @@ class TwoDListOfListsTest {
 
     @Test
     void iteratorMultipleTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         Object[] oneDimArray = new Object[6];
         System.arraycopy(defaultArray[0], 0, oneDimArray, 0, 2);
         System.arraycopy(defaultArray[1], 0, oneDimArray, 2, 3);
@@ -67,7 +67,7 @@ class TwoDListOfListsTest {
 
     @Test
     void iteratorForTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         Object[] oneDimArray = new Object[6];
         System.arraycopy(defaultArray[0], 0, oneDimArray, 0, 2);
         System.arraycopy(defaultArray[1], 0, oneDimArray, 2, 3);
@@ -85,7 +85,7 @@ class TwoDListOfListsTest {
 
     @Test
     void constructorTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertEquals(0, list.size());
         assertFalse(list.iterator().hasNext());
         assertFalse(list.listIterator().hasNext());
@@ -98,9 +98,9 @@ class TwoDListOfListsTest {
 
     @Test
     void constructorCapacityTest() {
-        assertThrows(IllegalArgumentException.class, () -> new TwoDListOfLists<>(-1));
-        assertThrows(IllegalArgumentException.class, () -> new TwoDListOfLists<>(0, -1));
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>(5, 3);
+        assertThrows(IllegalArgumentException.class, () -> new TwoDArrayList<>(-1));
+        assertThrows(IllegalArgumentException.class, () -> new TwoDArrayList<>(0, -1));
+        TwoDArrayList<Object> list = new TwoDArrayList<>(5, 3);
         assertEquals(0, list.size());
         assertFalse(list.iterator().hasNext());
         assertFalse(list.listIterator().hasNext());
@@ -113,19 +113,19 @@ class TwoDListOfListsTest {
 
     @Test
     void constructorNullTest() {
-        assertThrows(NullPointerException.class, () -> new TwoDListOfLists<>((TwoDListOfLists<Object>) null));
+        assertThrows(NullPointerException.class, () -> new TwoDArrayList<>((TwoDArrayList<Object>) null));
     }
 
     @Test
     void constructorOtherTest() {
-        TwoDListOfLists<Object> other = new TwoDListOfLists<>(5, 3);
+        TwoDArrayList<Object> other = new TwoDArrayList<>(5, 3);
         other.add(0, new Object());
         other.add(0, new Object());
         other.add(1, new Object());
         other.add(1, new Object());
         other.add(1, new Object());
         other.add(2, new Object());
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>(other);
+        TwoDArrayList<Object> list = new TwoDArrayList<>(other);
         assertEquals(6, list.size());
         assertEquals(2, list.size(0));
         assertEquals(3, list.size(1));
@@ -145,12 +145,12 @@ class TwoDListOfListsTest {
 
     @Test
     void constructorArrayNullTest() {
-        assertThrows(NullPointerException.class, () -> new TwoDListOfLists<>((Object[][]) null));
+        assertThrows(NullPointerException.class, () -> new TwoDArrayList<>((Object[][]) null));
     }
 
     @Test
     void constructorArrayOtherTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         assertEquals(6, list.size());
         assertEquals(2, list.size(0));
         assertEquals(3, list.size(1));
@@ -170,7 +170,7 @@ class TwoDListOfListsTest {
 
     @Test
     void sizeTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertEquals(0, list.size());
         list.add(0, new Object());
         assertEquals(1, list.size());
@@ -192,7 +192,7 @@ class TwoDListOfListsTest {
 
     @Test
     void getTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         Object o2 = new Object();
         Object o3 = new Object();
@@ -212,7 +212,7 @@ class TwoDListOfListsTest {
 
     @Test
     void setTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         Object o2 = new Object();
         Object o3 = new Object();
@@ -238,7 +238,7 @@ class TwoDListOfListsTest {
 
     @Test
     void addTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         Object o2 = new Object();
         Object o3 = new Object();
@@ -268,7 +268,7 @@ class TwoDListOfListsTest {
 
     @Test
     void removeTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         Object o2 = new Object();
         Object o3 = new Object();
@@ -295,13 +295,13 @@ class TwoDListOfListsTest {
 
     @Test
     void shortestArrayEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertArrayEquals(new Object[0], list.shortestArray(new Object[0]));
     }
 
     @Test
     void shortestArrayTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         assertArrayEquals(defaultArray[2], list.shortestArray(new Object[0]));
     }
 
@@ -311,13 +311,13 @@ class TwoDListOfListsTest {
 
     @Test
     void shortestListEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertEquals(0, list.shortestList().size());
     }
 
     @Test
     void shortestListTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         assertEquals(1, list.shortestList().size());
         assertEquals(defaultArray[2][0], list.shortestList().getFirst());
     }
@@ -328,13 +328,13 @@ class TwoDListOfListsTest {
 
     @Test
     void longestArrayEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertArrayEquals(new Object[0], list.longestArray(new Object[0]));
     }
 
     @Test
     void longestArrayTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         assertArrayEquals(defaultArray[1], list.longestArray(new Object[0]));
     }
 
@@ -344,13 +344,13 @@ class TwoDListOfListsTest {
 
     @Test
     void longestListEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         assertEquals(0, list.longestList().size());
     }
 
     @Test
     void longestListTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         assertEquals(3, list.longestList().size());
         assertEquals(defaultArray[1][0], list.longestList().getFirst());
         assertEquals(defaultArray[1][1], list.longestList().get(1));
@@ -363,7 +363,7 @@ class TwoDListOfListsTest {
 
     @Test
     void addToShortestEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         list.addToShortest(o1);
         assertEquals(1, list.size());
@@ -373,7 +373,7 @@ class TwoDListOfListsTest {
 
     @Test
     void addToShortestTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         Object o1 = new Object();
         list.addToShortest(o1);
         assertEquals(2, list.size(2));
@@ -389,7 +389,7 @@ class TwoDListOfListsTest {
 
     @Test
     void addToLongestEmptyTest() {
-        TwoDListOfLists<Object> list = new TwoDListOfLists<>();
+        TwoDArrayList<Object> list = new TwoDArrayList<>();
         Object o1 = new Object();
         list.addToLongest(o1);
         assertEquals(1, list.size());
@@ -399,7 +399,7 @@ class TwoDListOfListsTest {
 
     @Test
     void addToLongestTest() {
-        TwoDListOfLists<Object> list = defaultList;
+        TwoDArrayList<Object> list = defaultList;
         Object o1 = new Object();
         list.addToLongest(o1);
         assertEquals(4, list.size(1));
