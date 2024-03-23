@@ -22,15 +22,23 @@ public class TwoDListOfLists<E> extends AbstractCollection<E> implements TwoDLis
         if (initialNumCols < 0)
             throw new IllegalArgumentException("Illegal number of columns. Must be positive or zero: " + initialNumCols);
         this.elementData = new ArrayList<>(initialNumRows);
-        for (int i = 0; i < initialNumRows; i++) {
-            this.elementData.add(new ArrayList<>(initialNumCols));
-        }
     }
 
     public TwoDListOfLists(TwoDListOfLists<E> other) {
+        Objects.requireNonNull(other, "Other list must not be null.");
         this.elementData = new ArrayList<>(other.elementData.size());
         for (int i = 0; i < other.elementData.size(); i++) {
             this.elementData.add(new ArrayList<>(other.elementData.get(i)));
+        }
+    }
+
+    public TwoDListOfLists(E[][] array) {
+        Objects.requireNonNull(array, "Array must not be null.");
+        this.elementData = new ArrayList<>(array.length);
+        for (E[] row : array) {
+            List<E> list = new ArrayList<>(row.length);
+            Collections.addAll(list, row);
+            elementData.add(list);
         }
     }
 
@@ -53,6 +61,11 @@ public class TwoDListOfLists<E> extends AbstractCollection<E> implements TwoDLis
     }
 
     @Override
+    public List<E> get(int row) {
+        return elementData.get(row);
+    }
+
+    @Override
     public E get(int row, int column) {
         return elementData.get(row).get(column);
     }
@@ -64,6 +77,10 @@ public class TwoDListOfLists<E> extends AbstractCollection<E> implements TwoDLis
 
     @Override
     public boolean add(int row, E element) {
+        if (row >= elementData.size()) {
+            for (int i = elementData.size(); i <= row; i++)
+                elementData.add(new ArrayList<>());
+        }
         return elementData.get(row).add(element);
     }
 
@@ -79,17 +96,19 @@ public class TwoDListOfLists<E> extends AbstractCollection<E> implements TwoDLis
 
     @Override
     public E[] shortestArray(E[] array) {
+        Objects.requireNonNull(array, "Array must not be null.");
         return shortestList().toArray(array);
     }
 
     @Override
     public List<E> shortestList() {
-        int shortest = Integer.MAX_VALUE;
-        for (List<E> elementDatum : elementData) {
-            if (elementDatum.size() < shortest)
-                shortest = elementDatum.size();
+        if (elementData.isEmpty()) return new ArrayList<>();
+        List<E> shortestList = elementData.getFirst();
+        for (int i = 1; i < elementData.size(); i++) {
+            if (elementData.get(i).size() < shortestList.size())
+                shortestList = elementData.get(i);
         }
-        return elementData.get(shortest);
+        return shortestList;
     }
 
     @Override
@@ -99,22 +118,27 @@ public class TwoDListOfLists<E> extends AbstractCollection<E> implements TwoDLis
 
     @Override
     public List<E> longestList() {
-        int longest = 0;
-        for (List<E> elementDatum : elementData) {
-            if (elementDatum.size() > longest)
-                longest = elementDatum.size();
+        if (elementData.isEmpty()) return new ArrayList<>();
+        List<E> longestList = elementData.getFirst();
+        for (int i = 1; i < elementData.size(); i++) {
+            if (elementData.get(i).size() > longestList.size())
+                longestList = elementData.get(i);
         }
-        return elementData.get(longest);
+        return longestList;
     }
 
     @Override
     public boolean addToShortest(E element) {
-        return false;
+        if (elementData.isEmpty())
+            elementData.add(new ArrayList<>());
+        return shortestList().add(element);
     }
 
     @Override
     public boolean addToLongest(E element) {
-        return false;
+        if (elementData.isEmpty())
+            elementData.add(new ArrayList<>());
+        return longestList().add(element);
     }
 
     private class ElementIterator implements Iterator<E> {

@@ -71,6 +71,11 @@ public class TwoDArrayList<E> implements TwoDList<E>, Cloneable, RandomAccess {
     }
 
     @Override
+    public List<E> get(int row) {
+        return null;
+    }
+
+    @Override
     public E get(int row, int column) {
         checkIndices(row, column);
         return elementData(row, column);

@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface TwoDList<E> extends Collection<E> {
 
+    List<E> get(int row);
+
     E get(int row, int column);
 
     E set(int row, int column, E element);
