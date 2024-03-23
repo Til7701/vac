@@ -1,5 +1,6 @@
 package de.holube.vac.stream;
 
+import de.holube.vac.collections.TwoDList;
 import lombok.NonNull;
 
 import java.util.Objects;
@@ -9,10 +10,10 @@ import java.util.function.Predicate;
 
 public class SimpleTwoDStream<T> implements TwoDStream<T> {
 
-    private T[][] matrix;
+    private final TwoDList<T> matrix;
     private boolean parallel;
 
-    SimpleTwoDStream(@NonNull T[][] matrix, boolean parallel) {
+    SimpleTwoDStream(@NonNull TwoDList<T> matrix, boolean parallel) {
         this.matrix = matrix;
         this.parallel = parallel;
     }
@@ -31,27 +32,14 @@ public class SimpleTwoDStream<T> implements TwoDStream<T> {
 
     @Override
     public <O> TwoDStream<O> callMappingOp(@NonNull MappingOp<T, O> op) {
-        Downstream<T, O> downstream = op.getDownstream();
-        downstream.setInput(matrix);
-
-        if (parallel)
-            op.performParallel(matrix);
-        else
-            op.performSequential(matrix);
-
-        O[][] output = downstream.getOutput();
+        TwoDList<O> output = performOp(op);
         Objects.requireNonNull(output, "Output of operation must not be null");
         return new SimpleTwoDStream<>(output, parallel);
     }
 
     @Override
     public TwoDStream<T> callNonMappingOp(@NonNull NonMappingOp<T> op) {
-        op.getDownstream().setInput(matrix);
-        if (parallel)
-            op.performParallel(matrix);
-        else
-            op.performSequential(matrix);
-
+        performOp(op);
         return this;
     }
 
@@ -71,6 +59,13 @@ public class SimpleTwoDStream<T> implements TwoDStream<T> {
     public TwoDStream<T> filterElements(@NonNull Predicate<T> predicate) {
         FilterElementsOp<T> op = new FilterElementsOp<>(predicate);
         return callNonMappingOp(op);
+    }
+
+    private <O> TwoDList<O> performOp(Op<T, O> op) {
+        if (parallel)
+            return op.performParallel(matrix);
+        else
+            return op.performSequential(matrix);
     }
 
 }

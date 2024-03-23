@@ -1,5 +1,7 @@
 package de.holube.vac.collections;
 
+import de.holube.vac.stream.TwoDStream;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +18,8 @@ public interface TwoDList<E> extends Collection<E> {
 
     boolean add(int row, E element);
 
+    void addList(List<E> newRow);
+
     E remove(int row, int column);
 
     int size(int row);
@@ -31,5 +35,9 @@ public interface TwoDList<E> extends Collection<E> {
     boolean addToShortest(E element);
 
     boolean addToLongest(E element);
+
+    TwoDStream<E> twoDStream();
+
+    TwoDList<E> copy();
 
 }

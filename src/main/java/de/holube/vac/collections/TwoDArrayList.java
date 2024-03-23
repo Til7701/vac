@@ -1,5 +1,8 @@
 package de.holube.vac.collections;
 
+import de.holube.vac.stream.TwoDStream;
+import de.holube.vac.stream.TwoDStreams;
+
 import java.util.*;
 
 public class TwoDArrayList<E> extends AbstractCollection<E> implements TwoDList<E>, RandomAccess {
@@ -22,6 +25,18 @@ public class TwoDArrayList<E> extends AbstractCollection<E> implements TwoDList<
         if (initialNumCols < 0)
             throw new IllegalArgumentException("Illegal number of columns. Must be positive or zero: " + initialNumCols);
         this.elementData = new ArrayList<>(initialNumRows);
+    }
+
+    public TwoDArrayList(TwoDList<E> other) {
+        Objects.requireNonNull(other, "Other list must not be null.");
+        this.elementData = new ArrayList<>();
+        for (int i = 0; i < other.size(); i++) {
+            List<E> row = new ArrayList<>(other.size(i));
+            for (int j = 0; j < other.size(i); j++) {
+                row.add(other.get(i, j));
+            }
+            elementData.add(row);
+        }
     }
 
     public TwoDArrayList(TwoDArrayList<E> other) {
@@ -86,6 +101,12 @@ public class TwoDArrayList<E> extends AbstractCollection<E> implements TwoDList<
     }
 
     @Override
+    public void addList(List<E> newRow) {
+        Objects.requireNonNull(newRow, "New row must not be null.");
+        elementData.add(newRow);
+    }
+
+    @Override
     public E remove(int row, int column) {
         return elementData.get(row).remove(column);
     }
@@ -140,6 +161,16 @@ public class TwoDArrayList<E> extends AbstractCollection<E> implements TwoDList<
         if (elementData.isEmpty())
             elementData.add(new ArrayList<>());
         return longestList().add(element);
+    }
+
+    @Override
+    public TwoDStream<E> twoDStream() {
+        return TwoDStreams.of(this);
+    }
+
+    @Override
+    public TwoDList<E> copy() {
+        return new TwoDArrayList<>(this);
     }
 
     private class ElementIterator implements Iterator<E> {

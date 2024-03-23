@@ -1,5 +1,7 @@
 package de.holube.vac.stream;
 
+import de.holube.vac.collections.TwoDArrayList;
+import de.holube.vac.collections.TwoDList;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -7,14 +9,8 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TwoDStreams {
 
-    @SuppressWarnings("unchecked")
-    public static <T> TwoDStream<T> of(@NonNull T[][] matrix) {
-        T[][] copy = (T[][]) new Object[matrix.length][];
-        for (int i = 0; i < matrix.length; i++) {
-            copy[i] = (T[]) new Object[matrix[i].length];
-            System.arraycopy(matrix[i], 0, copy[i], 0, matrix[i].length);
-        }
-        return new SimpleTwoDStream<>(copy, false);
+    public static <T> TwoDStream<T> of(@NonNull TwoDList<T> matrix) {
+        return new SimpleTwoDStream<>(new TwoDArrayList<>(matrix), false);
     }
 
 }

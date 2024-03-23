@@ -1,11 +1,11 @@
 package de.holube.vac.stream;
 
-public sealed interface Op<I, O> permits MappingOp, NonMappingOp {
+import de.holube.vac.collections.TwoDList;
 
-    Downstream<I, O> getDownstream();
+public sealed interface Op<I, O> permits AbstractOp {
 
-    void performSequential(I[][] input);
+    TwoDList<O> performSequential(TwoDList<I> input);
 
-    void performParallel(I[][] input);
+    TwoDList<O> performParallel(TwoDList<I> input);
 
 }

@@ -1,8 +1,11 @@
 package de.holube.vac.stream;
 
+import de.holube.vac.collections.TwoDArrayList;
+import de.holube.vac.collections.TwoDList;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
@@ -11,24 +14,15 @@ class MapElementsOp<I, O> extends MappingOp<I, O> {
     private final Function<I, O> function;
 
     @Override
-    public void performSequential(I[][] input) {
-        O[][] output = downstream.createOutputWithSameDimensions(null);
-        for (int i = 0; i < output.length; i++) {
-            for (int j = 0; j < output[i].length; j++) {
-                output[i][j] = function.apply(input[i][j]);
-            }
+    public TwoDList<O> performSequential(TwoDList<I> input) {
+        TwoDList<O> output = new TwoDArrayList<>();
+        Iterator<List<I>> iterator = input.listIterator();
+        while (iterator.hasNext()) {
+            List<I> row = iterator.next();
+            List<O> newRow = row.stream().map(function).toList();
+            output.addList(newRow);
         }
-    }
-
-    @Override
-    public void performParallel(I[][] input) {
-        O[][] output = downstream.createOutputWithSameDimensions(null);
-        Arrays.stream(input)
-                .parallel()
-                .forEach(row -> {
-                    for (int j = 0; j < row.length; j++)
-                        output[0][j] = function.apply(row[j]);
-                });
+        return output;
     }
 
 }
