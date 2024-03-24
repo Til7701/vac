@@ -25,7 +25,7 @@ public class CompilerMain {
         LangLexer lexer = new LangLexer(CharStreams.fromFileName(fileName));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LangParser parser = new LangParser(tokens);
-        ParseTree tree = parser.print();
+        ParseTree tree = parser.file();
         ParseTreeWalker walker = new ParseTreeWalker();
         LangCompiler compiler = new LangCompiler();
         walker.walk(compiler, tree);

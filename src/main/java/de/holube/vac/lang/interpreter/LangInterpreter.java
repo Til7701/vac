@@ -9,7 +9,7 @@ public class LangInterpreter extends LangBaseListener {
     public void enterPrint(LangParser.PrintContext ctx) {
         super.enterPrint(ctx);
         String text = ctx.STRING().getText();
-        System.out.println(text.substring(1, text.length() - 1));
+        System.out.println(text);
     }
 
 }

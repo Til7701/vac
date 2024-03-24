@@ -21,7 +21,7 @@ public class InterpreterMain {
         LangLexer lexer = new LangLexer(CharStreams.fromFileName(file));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         LangParser parser = new LangParser(tokens);
-        ParseTree tree = parser.print();
+        ParseTree tree = parser.file();
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(new LangInterpreter(), tree);
     }
